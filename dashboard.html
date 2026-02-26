@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>Моё Расписание | Личный кабинет</title>
+        <link rel="manifest" href="manifest.json">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="moe-raspisanie.png" type="image/x-icon">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar" aria-label="Основная навигация">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" class="nav-logo-link">
+                    <img src="moe-raspisanie.png" alt="Моё Расписание">
+                    <span>Моё Расписание</span>
+                </a>
+            </div>
+            <ul id="primary-menu" class="nav-menu center-menu">
+                <li><a href="index.html" class="nav-link">Главная</a></li>
+                <li><a href="#schedule" class="nav-link">Расписание</a></li>
+                <li><a href="profile.html" class="nav-link">Профиль</a></li>
+                <li><a href="#" id="logout" class="nav-link">Выход</a></li>
+            </ul>
+            
+            <div class="theme-toggle">
+                <button id="theme-toggle-btn" type="button" aria-label="Переключить тему"><i class="fas fa-moon"></i></button>
+            </div>
+            <button class="hamburger" type="button" aria-label="Открыть меню" aria-controls="primary-menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Геройская секция -->
+    <section class="hero">
+        <div class="hero-background">
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>Личный кабинет</span>
+            </div>
+            <h1 class="hero-title">
+                Добро пожаловать, <span id="user-name" class="gradient-text">Пользователь</span>!
+            </h1>
+            <p class="hero-subtitle">
+                Здесь вы можете просмотреть своё расписание и управлять им.
+            </p>
+        </div>
+    </section>
+
+    <!-- Расписание -->
+    <section id="schedule" class="schedule-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ваше расписание</h2>
+                <div class="actions-toolbar">
+                    <button id="add-lesson" class="add-button">
+                        <i class="fas fa-plus"></i>
+                        Добавление уроков
+                    </button>
+                    <button id="rearrange-open" class="add-button">
+                        <i class="fas fa-right-left"></i>
+                        Перестановка уроков
+                    </button>
+                    <button id="print-schedule" class="add-button">
+                        <i class="fas fa-print"></i>
+                        Печать
+                    </button>
+                    <button id="clear-schedule" class="add-button">
+                        <i class="fas fa-broom"></i>
+                        Очистить всё
+                    </button>
+                    <button id="export-excel" class="add-button">
+                        <i class="fas fa-file-excel"></i>
+                        Сохранить в Excel
+                    </button>
+                    <button id="import-excel" class="add-button">
+                        <i class="fas fa-file-excel"></i>
+                        Импорт Excel
+                    </button>
+                    <button id="auto-generate" class="add-button">
+                        <i class="fas fa-robot"></i>
+                        Автоформирование
+                    </button>
+                    <button id="subscribe-notifications" class="add-button">
+                        <i class="fas fa-bell"></i>
+                        Уведомления
+                    </button>
+                </div>
+                <input type="file" id="import-excel-file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,.xlsx,.xls" style="display:none" />
+                <div class="form-group" style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+                    <input id="filter-text" type="text" placeholder="Поиск по предметам, учителям, классам, аудиториям" class="search-input" aria-label="Текстовый поиск по расписанию">
+                    <select id="filter-class" style="padding:8px;">
+                        <option value="all">Все классы</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="schedule-grid">
+                <!-- Понедельник -->
+                <div class="day-card">
+                    <h3>Понедельник</h3>
+                    <div id="monday-lessons" class="lessons-list">
+                        <!-- Уроки будут добавлены динамически -->
+                    </div>
+                </div>
+
+                <!-- Вторник -->
+                <div class="day-card">
+                    <h3>Вторник</h3>
+                    <div id="tuesday-lessons" class="lessons-list">
+                        <!-- Уроки будут добавлены динамически -->
+                    </div>
+                </div>
+
+                <!-- Среда -->
+                <div class="day-card">
+                    <h3>Среда</h3>
+                    <div id="wednesday-lessons" class="lessons-list">
+                        <!-- Уроки будут добавлены динамически -->
+                    </div>
+                </div>
+
+                <!-- Четверг -->
+                <div class="day-card">
+                    <h3>Четверг</h3>
+                    <div id="thursday-lessons" class="lessons-list">
+                        <!-- Уроки будут добавлены динамически -->
+                    </div>
+                </div>
+
+                <!-- Пятница -->
+                <div class="day-card">
+                    <h3>Пятница</h3>
+                    <div id="friday-lessons" class="lessons-list">
+                        <!-- Уроки будут добавлены динамически -->
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Модальное окно для добавления урока -->
+    <div id="lesson-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="lesson-modal-title">
+        <div class="modal-content">
+            <span class="close lesson-close">&times;</span>
+            <h2 id="lesson-modal-title">Добавить урок</h2>
+            <form id="lesson-form">
+                <div class="form-group full">
+                    <label for="lesson-subject">Предмет:</label>
+                    <input type="text" id="lesson-subject" list="subject-list" required>
+                </div>
+                <div class="form-group">
+                    <label for="lesson-teacher">Преподаватель:</label>
+                    <input type="text" id="lesson-teacher" list="teacher-list">
+                </div>
+                <div class="form-group">
+                    <label for="lesson-class">Класс/группа:</label>
+                    <input type="text" id="lesson-class" list="class-list">
+                </div>
+                <div class="form-group">
+                    <label for="lesson-day">День недели:</label>
+                    <select id="lesson-day" required>
+                        <option value="monday">Понедельник</option>
+                        <option value="tuesday">Вторник</option>
+                        <option value="wednesday">Среда</option>
+                        <option value="thursday">Четверг</option>
+                        <option value="friday">Пятница</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lesson-time">Время:</label>
+                    <input type="time" id="lesson-time" required>
+                </div>
+                <div class="form-group">
+                    <label for="lesson-room">Аудитория:</label>
+                    <input type="text" id="lesson-room" list="room-list">
+                </div>
+                <input type="hidden" id="lesson-id">
+                <input type="hidden" id="lesson-original-day">
+                <datalist id="teacher-list"></datalist>
+                <datalist id="class-list">
+                    <option value="5"></option>
+                    <option value="6"></option>
+                    <option value="7"></option>
+                    <option value="8"></option>
+                    <option value="9"></option>
+                    <option value="10"></option>
+                    <option value="11"></option>
+                </datalist>
+                <datalist id="room-list"></datalist>
+                <datalist id="subject-list"></datalist>
+                <button type="submit" class="save-button">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для перестановки при отсутствии учителя -->
+    <div id="rearrange-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rearrange-modal-title">
+        <div class="modal-content">
+            <span class="close rearrange-close">&times;</span>
+            <h2 id="rearrange-modal-title">Перестановка уроков при отсутствии учителя</h2>
+            <div class="form-group">
+                <label for="absent-teacher-select">Выберите учителя:</label>
+                <select id="absent-teacher-select">
+                    <option value="">— Выберите из списка —</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="absent-teacher-input">или введите вручную:</label>
+                <input type="text" id="absent-teacher-input" placeholder="Имя учителя">
+            </div>
+            <div class="form-group">
+                <label for="rearrange-day">День:</label>
+                <select id="rearrange-day">
+                    <option value="all">Все дни</option>
+                    <option value="monday">Понедельник</option>
+                    <option value="tuesday">Вторник</option>
+                    <option value="wednesday">Среда</option>
+                    <option value="thursday">Четверг</option>
+                    <option value="friday">Пятница</option>
+                </select>
+            </div>
+            <button id="apply-rearrange" class="save-button">Переставить</button>
+        </div>
+    </div>
+
+    
+
+    <div id="toast-container"></div>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Моё Расписание</h3>
+                    <p>Умный электронный помощник для обучающихся</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Путеводитель по сайту</h4>
+                    <ul>
+                        <li><a href="#schedule">Расписание</a></li>
+                        <li><a href="profile.html">Профиль</a></li>
+                        <li><a href="index.html">Главная</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Социальные сети</h4>
+                    <div class="social-links">
+                        <a href="https://vk.com/ors_dmitry" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-vk"></i>
+                        </a>
+                        <a href="https://t.me/obnqo" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://github.com/obnqo40" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Моё Расписание. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Скрипты -->
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <title>Моё Расписание | Вход и регистрация</title>
+        <link rel="manifest" href="manifest.json">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="moe-raspisanie.png" type="image/x-icon">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar" aria-label="Основная навигация">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" class="nav-logo-link">
+                    <img src="moe-raspisanie.png" alt="Моё Расписание">
+                    <span>Моё Расписание</span>
+                </a>
+            </div>
+            <ul id="primary-menu" class="nav-menu center-menu">
+                <li><a href="index.html" class="nav-link">Главная</a></li>
+            </ul>
+            
+            <div class="theme-toggle">
+                <button id="theme-toggle-btn" type="button" aria-label="Переключить тему"><i class="fas fa-moon"></i></button>
+            </div>
+            <button class="hamburger" type="button" aria-label="Открыть меню" aria-controls="primary-menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Геройская секция -->
+    <section class="hero">
+        <div class="hero-background">
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span>Аутентификация</span>
+            </div>
+            <h1 class="hero-title">
+                Добро пожаловать!
+            </h1>
+            <p class="hero-subtitle">
+                Войдите в свой аккаунт или зарегистрируйтесь, чтобы управлять своим расписанием.
+            </p>
+            <div class="auth-tabs">
+                <button id="login-tab" class="auth-tab active">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Вход</span>
+                </button>
+                <button id="register-tab" class="auth-tab">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Регистрация</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Формы аутентификации -->
+    <section id="auth-forms" class="join-section">
+        <div class="container">
+            <!-- Форма входа -->
+            <div id="login-form" class="join-content active">
+                <h2 class="join-title">Вход в аккаунт</h2>
+                <p class="join-subtitle">
+                    Введите свои данные для входа
+                </p>
+
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" name="email" required autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" enterkeyhint="next">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль</label>
+                        <div class="input-with-toggle">
+                            <input type="password" id="loginPassword" name="password" required autocomplete="current-password" enterkeyhint="go">
+                            <button type="button" class="password-toggle" data-target="loginPassword"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Тип аккаунта</label>
+                        <div class="role-toggle" id="login-role-toggle">
+                            <input type="radio" id="login-role-student" name="loginRole" value="student" checked>
+                            <label for="login-role-student" class="role-option"><i class="fas fa-user-graduate"></i> Ученик</label>
+                            <input type="radio" id="login-role-teacher" name="loginRole" value="teacher">
+                            <label for="login-role-teacher" class="role-option"><i class="fas fa-chalkboard-teacher"></i> Учитель</label>
+                        </div>
+                    </div>
+                    <div id="loginTeacherCodeGroup" class="form-group" style="display:none;">
+                        <label for="loginTeacherCode">Код подтверждения учителя</label>
+                        <input type="text" id="loginTeacherCode" name="teacherCode" placeholder="Введите код" inputmode="numeric" enterkeyhint="go">
+                    </div>
+                    <button type="submit" class="join-button">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Войти</span>
+                    </button>
+                </form>
+
+                
+            </div>
+
+            <!-- Форма регистрации -->
+            <div id="register-form" class="join-content">
+                <h2 class="join-title">Регистрация</h2>
+                <p class="join-subtitle">
+                    Заполните форму для создания аккаунта
+                </p>
+
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerName">Имя</label>
+                        <input type="text" id="registerName" name="name" required autocomplete="name" enterkeyhint="next">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" name="email" required autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" enterkeyhint="next">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Пароль</label>
+                        <div class="input-with-toggle">
+                            <input type="password" id="registerPassword" name="password" required autocomplete="new-password" enterkeyhint="next">
+                            <button type="button" class="password-toggle" data-target="registerPassword"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerConfirmPassword">Подтвердите пароль</label>
+                        <div class="input-with-toggle">
+                            <input type="password" id="registerConfirmPassword" name="confirmPassword" required autocomplete="new-password" enterkeyhint="go">
+                            <button type="button" class="password-toggle" data-target="registerConfirmPassword"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Тип аккаунта</label>
+                        <div class="role-toggle" id="register-role-toggle">
+                            <input type="radio" id="reg-role-student" name="registerRole" value="student" checked>
+                            <label for="reg-role-student" class="role-option"><i class="fas fa-user-graduate"></i> Ученик</label>
+                            <input type="radio" id="reg-role-teacher" name="registerRole" value="teacher">
+                            <label for="reg-role-teacher" class="role-option"><i class="fas fa-chalkboard-teacher"></i> Учитель</label>
+                        </div>
+                    </div>
+                    <div id="teacherCodeGroup" class="form-group" style="display:none;">
+                        <label for="registerTeacherCode">Код подтверждения учителя</label>
+                        <input type="text" id="registerTeacherCode" name="teacherCode" placeholder="Введите код">
+                    </div>
+                    <button type="submit" class="join-button">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Зарегистрироваться</span>
+                    </button>
+                </form>
+
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Моё Расписание</h3>
+                    <p>Умный электронный помощник для обучающихся</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Путеводитель по сайту</h4>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="#login-form">Вход</a></li>
+                        <li><a href="#register-form">Регистрация</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Социальные сети</h4>
+                    <div class="social-links">
+                        <a href="https://vk.com/obnqo" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-vk"></i>
+                        </a>
+                        <a href="https://t.me/obnqo" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="https://github.com/obnqo40" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Моё Расписание. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Скрипты -->
+    <script src="script.js"></script>
+    <div id="toast-container"></div>
+</body>
+</html>

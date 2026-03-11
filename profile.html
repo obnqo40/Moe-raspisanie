@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Моё Расписание | Профиль</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="moe-raspisanie.png" type="image/x-icon">
+</head>
+<body>
+    <nav class="navbar" aria-label="Основная навигация">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" class="nav-logo-link">
+                    <img src="moe-raspisanie.png" alt="Моё Расписание">
+                    <span>Моё Расписание</span>
+                </a>
+            </div>
+            <ul id="primary-menu" class="nav-menu center-menu">
+                <li><a href="index.html" class="nav-link">Главная</a></li>
+                <li><a href="dashboard.html" class="nav-link">Расписание</a></li>
+                <li><a href="#" id="logout" class="nav-link">Выход</a></li>
+            </ul>
+            
+            <div class="theme-toggle">
+                <button id="theme-toggle-btn" type="button" aria-label="Переключить тему"><i class="fas fa-moon"></i></button>
+            </div>
+            <button class="hamburger" type="button" aria-label="Открыть меню" aria-controls="primary-menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <div class="hero-badge"><span>Профиль</span></div>
+            <h1 class="hero-title">Настройки аккаунта</h1>
+            <p class="hero-subtitle">Обновите информацию профиля и пароль.</p>
+        </div>
+    </section>
+
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-card">
+                <h2>Профиль пользователя</h2>
+                <form id="profile-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="profile-name">Имя</label>
+                        <input type="text" id="profile-name" required autocomplete="name" enterkeyhint="next">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-email">Email</label>
+                        <input type="email" id="profile-email" required autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" enterkeyhint="next">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-password">Новый пароль</label>
+                        <input type="password" id="profile-password" placeholder="Оставьте пустым, чтобы не менять" autocomplete="new-password" enterkeyhint="next">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-password-confirm">Подтвердите пароль</label>
+                        <input type="password" id="profile-password-confirm" placeholder="Оставьте пустым, чтобы не менять" autocomplete="new-password" enterkeyhint="go">
+                    </div>
+                    <button type="submit" class="save-button"><i class="fas fa-save"></i> Сохранить</button>
+                </form>
+            </div>
+            <div class="profile-card" id="github-config-card" style="display:none;">
+                <h2>Синхронизация через GitHub</h2>
+                <p>Публичный или приватный репозиторий будет использоваться для хранения users.json и schedule.json.</p>
+                <form id="github-config-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="gh-owner">Владелец (owner)</label>
+                        <input type="text" id="gh-owner" placeholder="например, username или организация">
+                    </div>
+                    <div class="form-group">
+                        <label for="gh-repo">Репозиторий (repo)</label>
+                        <input type="text" id="gh-repo" placeholder="например, my-schedule-data">
+                    </div>
+                    <div class="form-group">
+                        <label for="gh-branch">Ветка</label>
+                        <input type="text" id="gh-branch" placeholder="main">
+                    </div>
+                    <div class="form-group">
+                    </div>
+                    <button type="submit" class="save-button"><i class="fas fa-save"></i> Сохранить</button>
+                </form>
+            </div>
+            <div class="profile-card" id="api-config-card" style="display:none;">
+                <h2>Настройки API (опционально)</h2>
+                <form id="api-config-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="api-base">Адрес API</label>
+                        <input type="text" id="api-base" placeholder="https://example.com/api">
+                    </div>
+                    <div class="form-group">
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button type="submit" class="save-button"><i class="fas fa-save"></i> Сохранить</button>
+                        <button type="button" id="api-test" class="add-button"><i class="fas fa-link"></i> Тест соединения</button>
+                    </div>
+                </form>
+            </div>
+            <div class="profile-card" id="invite-config-card" style="display:none;">
+                <h2>Пригласительные коды учителя</h2>
+                <form id="invite-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="invite-code">Новый код</label>
+                        <input type="text" id="invite-code" placeholder="Введите код">
+                    </div>
+                    <button type="submit" class="save-button"><i class="fas fa-save"></i> Добавить</button>
+                </form>
+                <div class="catalog-list" style="margin-top: 1rem;">
+                    <table class="catalog-table">
+                        <thead>
+                            <tr>
+                                <th>Код</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invite-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Моё Расписание</h3>
+                    <p>Умный электронный помощник для обучающихся</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Путеводитель по сайту</h4>
+                    <ul>
+                        <li><a href="dashboard.html">Расписание</a></li>
+                        <li><a href="index.html">Главная</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Социальные сети</h4>
+                    <div class="social-links">
+                        <a href="https://vk.com/ors_dmitry" target="_blank" rel="noopener noreferrer"><i class="fab fa-vk"></i></a>
+                        <a href="https://t.me/obnqo" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram"></i></a>
+                        <a href="https://github.com/obnqo40" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Моё Расписание. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>

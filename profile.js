@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             body.appendChild(tr);
         });
     }
+
     const inviteForm = document.getElementById('invite-form');
     if (inviteForm) {
         inviteForm.addEventListener('submit', (e) => {
@@ -79,15 +80,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('invite-code');
             const code = (input?.value || '').trim();
             if (!code) return;
+            
             if (typeof addTeacherInvite === 'function') {
-                addTeacherInvite(code);
-            } else {
-                const list = JSON.parse(localStorage.getItem('teacherInvites') || '[]');
-                if (!list.includes(code)) { list.push(code); localStorage.setItem('teacherInvites', JSON.stringify(list)); }
+                if (addTeacherInvite(code)) {
+                    alert('Код добавлен');
+                } else {
+                    alert('Код уже существует или некорректен');
+                }
             }
+            
             if (input) input.value = '';
             renderInvites();
-            alert('Код добавлен');
         });
     }
     renderInvites();
@@ -123,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeof sha256 === 'function') {
                 newPassword = await sha256(password);
             } else {
-                newPassword = password;
+                alert('Ошибка: функция шифрования недоступна');
+                return;
             }
         } else {
             newPassword = existing ? existing.password : user.password;

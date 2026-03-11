@@ -91,6 +91,10 @@
                         <i class="fas fa-robot"></i>
                         Автоформирование
                     </button>
+                    <button id="open-generator-settings" class="add-button">
+                        <i class="fas fa-cogs"></i>
+                        Настройки генератора
+                    </button>
                     <button id="subscribe-notifications" class="add-button">
                         <i class="fas fa-bell"></i>
                         Уведомления
@@ -247,6 +251,47 @@
     
 
     <div id="toast-container"></div>
+
+    <!-- Модальное окно настроек генератора -->
+    <div id="generator-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 900px;">
+            <button class="close-modal generator-close">&times;</button>
+            <h2>Настройки автогенерации</h2>
+            
+            <div class="tabs" style="display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid var(--glass-border); padding-bottom:10px;">
+                <button class="tab-btn active" onclick="switchGenTab('gen-classes')" style="padding:8px 16px; background:none; border:none; border-bottom:2px solid var(--primary-color); font-weight:600;">Классы</button>
+                <button class="tab-btn" onclick="switchGenTab('gen-curriculum')" style="padding:8px 16px; background:none; border:none; color:var(--text-secondary);">Учебный план</button>
+                <button class="tab-btn" onclick="switchGenTab('gen-teachers')" style="padding:8px 16px; background:none; border:none; color:var(--text-secondary);">Учителя</button>
+            </div>
+
+            <div id="gen-classes" class="gen-tab-content" style="display:block;">
+                <div class="form-group">
+                    <label>Список классов (через запятую)</label>
+                    <textarea id="gen-classes-input" rows="3" placeholder="5А, 5Б, 6А, 7А, 8А, 9А, 10А, 11А" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--text-secondary-light);"></textarea>
+                    <p style="font-size:0.9em; color:var(--text-secondary);">Введите все классы, для которых нужно составить расписание.</p>
+                </div>
+            </div>
+
+            <div id="gen-curriculum" class="gen-tab-content" style="display:none;">
+                <p style="margin-bottom:10px;">Количество часов в неделю для каждого предмета.</p>
+                <div id="curriculum-container" style="max-height:400px; overflow-y:auto;">
+                    <!-- Таблица будет сгенерирована JS -->
+                </div>
+            </div>
+
+            <div id="gen-teachers" class="gen-tab-content" style="display:none;">
+                <p style="margin-bottom:10px;">Назначение учителей на предметы.</p>
+                <div id="teachers-mapping-container" style="max-height:400px; overflow-y:auto;">
+                    <!-- Список будет сгенерирован JS -->
+                </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top:20px; display:flex; justify-content:flex-end; gap:10px;">
+                <button id="save-generator-settings" class="add-button"><i class="fas fa-save"></i> Сохранить настройки</button>
+                <button id="run-generator-smart" class="save-button" style="background:var(--accent-color);"><i class="fas fa-play"></i> Запустить генерацию</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Футер -->
     <footer class="footer">

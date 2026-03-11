@@ -177,6 +177,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function sha256(str) {
+    if (!crypto || !crypto.subtle) {
+        // Fallback for non-secure contexts (e.g. local file without https)
+        // Note: This is a very simple hash for demo purposes, not secure for production!
+        // In real app, you should use HTTPS or a JS library for SHA-256
+        let hash = 0;
+        if (str.length === 0) return 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return Math.abs(hash).toString(16).padStart(64, '0');
+    }
     const enc = new TextEncoder().encode(str);
     const buf = await crypto.subtle.digest('SHA-256', enc);
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -203,7 +216,7 @@ function consumeTeacherInvite(code) {
     if (idx >= 0) { list.splice(idx, 1); saveTeacherInvites(list); return true; }
     return false;
 }
-const MASTER_TEACHER_CODE = 'ADMINPASSWORD';
+const MASTER_TEACHER_CODE_HASH = '';
 
 function normalizeTeacherCode(s) {
     const raw = String(s || '');
@@ -282,11 +295,13 @@ if (loginFormElement) {
         let users = JSON.parse(localStorage.getItem('users')) || [];
         try {
             const remote = await loadUsersRemote();
-            users = mergeUsers(users, remote);
-            localStorage.setItem('users', JSON.stringify(users));
+            if (remote) {
+                users = mergeUsers(users, remote);
+                localStorage.setItem('users', JSON.stringify(users));
+            }
         } catch(_) {}
         const inputHash = await sha256(password);
-        const user = users.find(u => u.email && u.password && u.email.toLowerCase() === email.toLowerCase() && (u.password === inputHash || u.password === password));
+        const user = users.find(u => u.email && u.password && u.email.toLowerCase() === email.toLowerCase() && u.password === inputHash);
         if (!user) {
             emailEl.classList.add('input-error');
             passEl.classList.add('input-error');
@@ -322,7 +337,9 @@ if (registerFormElement) {
         let users = JSON.parse(localStorage.getItem('users')) || [];
         try {
             const remote = await loadUsersRemote();
-            users = mergeUsers(users, remote);
+            if (remote) {
+                users = mergeUsers(users, remote);
+            }
         } catch(_) {}
         if (users.some(u => u.email && u.email.toLowerCase() === email.toLowerCase())) {
             showToast('Email уже зарегистрирован');
@@ -333,12 +350,12 @@ if (registerFormElement) {
             const codeEl = document.getElementById('registerTeacherCode');
             codeEl.classList.remove('input-error');
             const code = (codeEl.value || '').trim();
-            const asciiUp = code.toUpperCase();
-            const codeUp = normalizeTeacherCode(code);
-            const masterUp = normalizeTeacherCode(MASTER_TEACHER_CODE);
-            if (!codeUp || !(asciiUp === MASTER_TEACHER_CODE || codeUp === masterUp)) {
+            
+            // Проверка кода учителя через хеш
+            const codeHash = await sha256(code);
+            if (codeHash !== MASTER_TEACHER_CODE_HASH) {
                 codeEl.classList.add('input-error');
-                showToast('Неверный код учителя. Введите ADMINPASSWORD латиницей');
+                showToast('Неверный код учителя. Введите правильный пароль');
                 return;
             }
         }
@@ -546,6 +563,9 @@ function mergeUsers(localArr, remoteArr) {
 }
 
 async function syncUsersToServer(users) {
+    // Если запущен локально (file://), пропускаем синхронизацию
+    if (window.location.protocol === 'file:') return false;
+
     try {
         if (typeof isGithubWriteConfigured === 'function' && isGithubWriteConfigured()) {
             const ok = await (typeof syncUsersToGithub === 'function' ? syncUsersToGithub(users) : false);
@@ -582,7 +602,7 @@ async function loadUsersRemote() {
     } catch(_) {}
     try {
         const r = await fetch('users.json');
-        return r.ok ? await r.json() : [];
-    } catch(_) { return []; }
+        return r.ok ? await r.json() : null;
+    } catch(_) { return null; }
 }
 

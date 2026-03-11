@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             newPassword = existing ? existing.password : user.password;
         }
-        const updated = { name, email, password: newPassword, role: user.role };
+        const updated = { name, email, password: newPassword };
         if (existing) {
             const idx = users.indexOf(existing);
             users[idx] = updated;

@@ -129,7 +129,6 @@ button {
 .nav-logo img {
     height: 40px;
     width: auto;
-    border-radius: 20%;
 }
 
 .nav-menu {
@@ -279,9 +278,8 @@ button {
 
 /* Карточки и секции */
 section {
-    padding: 6rem 0;
+    padding: 3rem 0;
     position: relative;
-    /* background: var(--bg-body); - Убрано, чтобы не перекрывать фон Hero */
 }
 
 .container {
@@ -299,8 +297,12 @@ section {
 .about-grid, .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 4rem;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.about-card, .feature-card {
+    padding: 1.5rem;
 }
 
 .about-card, .feature-card, .profile-card, .day-card {
@@ -469,6 +471,18 @@ section {
     outline: none;
 }
 
+/* Подсветка ошибок в полях и сообщения об ошибках */
+.input-error {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+.field-error {
+    color: #ef4444;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    margin-top: -0.25rem;
+}
+
 .input-with-toggle {
     position: relative;
 }
@@ -562,7 +576,13 @@ section {
 .schedule-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
+}
+
+.day-card {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
 }
 
 .day-card h3 {
@@ -576,6 +596,38 @@ section {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    min-height: 120px;
+}
+
+.empty-state {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px dashed var(--glass-border);
+    border-radius: var(--radius-md);
+    color: var(--text-sub);
+    background: var(--bg-surface);
+}
+
+.empty-state i {
+    color: var(--text-secondary-dark);
+}
+
+.empty-state .empty-hint {
+    margin-left: auto;
+    color: var(--text-secondary-dark);
+    font-size: 0.9rem;
+}
+
+.empty-state.clickable {
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.empty-state.clickable:hover {
+    background: rgba(128, 128, 128, 0.06);
+    border-color: var(--text-secondary-dark);
 }
 
 .lesson-item {
@@ -647,7 +699,7 @@ section {
 }
 
 /* Модальные окна */
-.modal-overlay {
+.modal, .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -673,16 +725,80 @@ section {
     position: relative;
     box-shadow: var(--shadow-lg);
     animation: modalSlideIn 0.3s ease-out;
+    margin: auto; /* Центрирование */
 }
 
-.close-modal {
+.close, .close-modal, .lesson-close, .rearrange-close {
     position: absolute;
     top: 1rem;
     right: 1rem;
     background: transparent;
     font-size: 1.5rem;
     color: var(--text-sub);
+    cursor: pointer;
+    border: none;
+    line-height: 1;
 }
+
+/* Стили для печати */
+@media print {
+    .navbar, .footer, .actions-toolbar, .theme-toggle, .hamburger, .hero, .add-button, .save-button, .join-button, .modal, .modal-overlay, #toast-container {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+        overflow: visible !important;
+    }
+
+    .schedule-section {
+        padding: 0 !important;
+    }
+
+    .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .schedule-grid {
+        display: block !important;
+    }
+
+    .day-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        margin-bottom: 20px !important;
+        background: white !important;
+        color: black !important;
+    }
+
+    .lesson-item {
+        border: 1px solid #eee !important;
+        border-left: 4px solid #000 !important;
+        background: white !important;
+        color: black !important;
+    }
+    
+    .lesson-actions {
+        display: none !important;
+    }
+    
+    /* Скрываем фильтры */
+    #filter-text, #filter-class, .form-group {
+        display: none !important;
+    }
+    
+    h2.section-title {
+        margin-bottom: 1rem;
+        text-align: left;
+    }
+}
+
 
 /* Generator Tabs */
 .tabs {
@@ -801,6 +917,29 @@ section {
     border-top: 1px solid var(--glass-border);
     width: 100%;
     margin-top: 2rem;
+}
+
+/* Toasts */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 3000;
+    pointer-events: none;
+}
+.toast {
+    background: var(--bg-surface);
+    color: var(--text-main);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+    padding: 10px 14px;
+    border-radius: 8px;
+    min-width: 220px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: auto;
 }
 
 /* Адаптив для футера */

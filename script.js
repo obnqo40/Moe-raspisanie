@@ -177,19 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function sha256(str) {
-    if (!crypto || !crypto.subtle) {
-        // Fallback for non-secure contexts (e.g. local file without https)
-        // Note: This is a very simple hash for demo purposes, not secure for production!
-        // In real app, you should use HTTPS or a JS library for SHA-256
-        let hash = 0;
-        if (str.length === 0) return 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
-        for (let i = 0; i < str.length; i++) {
-            const char = str.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;
-        }
-        return Math.abs(hash).toString(16).padStart(64, '0');
-    }
     const enc = new TextEncoder().encode(str);
     const buf = await crypto.subtle.digest('SHA-256', enc);
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -563,9 +550,6 @@ function mergeUsers(localArr, remoteArr) {
 }
 
 async function syncUsersToServer(users) {
-    // Если запущен локально (file://), пропускаем синхронизацию
-    if (window.location.protocol === 'file:') return false;
-
     try {
         if (typeof isGithubWriteConfigured === 'function' && isGithubWriteConfigured()) {
             const ok = await (typeof syncUsersToGithub === 'function' ? syncUsersToGithub(users) : false);

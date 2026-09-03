@@ -13,88 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
     });
 
-    const ghCard = document.getElementById('github-config-card');
-    if (ghCard) ghCard.style.display = (user.role === 'teacher') ? 'block' : 'none';
-    const apiCard = document.getElementById('api-config-card');
-    if (apiCard) apiCard.style.display = (user.role === 'teacher') ? 'block' : 'none';
-    const inviteCard = document.getElementById('invite-config-card');
-    if (inviteCard) inviteCard.style.display = (user.role === 'teacher') ? 'block' : 'none';
-    const ghOwner = document.getElementById('gh-owner');
-    const ghRepo = document.getElementById('gh-repo');
-    const ghBranch = document.getElementById('gh-branch');
-    if (ghOwner) ghOwner.value = localStorage.getItem('githubOwner') || '';
-    if (ghRepo) ghRepo.value = localStorage.getItem('githubRepo') || '';
-    if (ghBranch) ghBranch.value = localStorage.getItem('githubBranch') || 'main';
-    const ghForm = document.getElementById('github-config-form');
-    if (ghForm) {
-        ghForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (ghOwner) localStorage.setItem('githubOwner', ghOwner.value.trim());
-            if (ghRepo) localStorage.setItem('githubRepo', ghRepo.value.trim());
-            if (ghBranch) localStorage.setItem('githubBranch', ghBranch.value.trim() || 'main');
-            alert('Настройки GitHub сохранены');
-        });
-    }
-    const apiInput = document.getElementById('api-base');
-    if (apiInput) apiInput.value = localStorage.getItem('apiBase') || '';
-    const apiForm = document.getElementById('api-config-form');
-    if (apiForm) {
-        apiForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const v = apiInput ? apiInput.value.trim().replace(/\/$/, '') : '';
-            if (v) localStorage.setItem('apiBase', v);
-            alert('Настройки API сохранены');
-        });
-    }
-    const apiTest = document.getElementById('api-test');
-    if (apiTest) {
-        apiTest.addEventListener('click', async () => {
-            const base = typeof getApiBase === 'function' ? getApiBase() : (localStorage.getItem('apiBase') || '');
-            if (!base) { alert('Введите адрес API'); return; }
-            try {
-                const headers = typeof apiHeaders === 'function' ? apiHeaders(false) : {};
-                const r = await fetch(`${base}/users.json`, { headers });
-                alert(r.ok ? 'Соединение установлено' : 'Не удалось подключиться');
-            } catch (_) {
-                alert('Ошибка соединения');
-            }
-        });
-    }
-
-    function renderInvites() {
-        const body = document.getElementById('invite-list');
-        if (!body) return;
-        const list = (typeof getTeacherInvites === 'function') ? getTeacherInvites() : [];
-        body.innerHTML = '';
-        list.forEach(code => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${code}</td>`;
-            body.appendChild(tr);
-        });
-    }
-
-    const inviteForm = document.getElementById('invite-form');
-    if (inviteForm) {
-        inviteForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const input = document.getElementById('invite-code');
-            const code = (input?.value || '').trim();
-            if (!code) return;
-            
-            if (typeof addTeacherInvite === 'function') {
-                if (addTeacherInvite(code)) {
-                    alert('Код добавлен');
-                } else {
-                    alert('Код уже существует или некорректен');
-                }
-            }
-            
-            if (input) input.value = '';
-            renderInvites();
-        });
-    }
-    renderInvites();
-
     document.getElementById('profile-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('profile-name').value.trim();
@@ -132,7 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             newPassword = existing ? existing.password : user.password;
         }
-        const updated = { name, email, password: newPassword };
+        const updated = {
+            name,
+            email,
+            password: newPassword,
+            role: existing?.role || user.role || 'student'
+        };
         if (existing) {
             const idx = users.indexOf(existing);
             users[idx] = updated;
@@ -140,15 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             users.push(updated);
         }
         localStorage.setItem('users', JSON.stringify(users));
-        if (typeof syncUsersToServer === 'function') {
-            syncUsersToServer(users).then((ok) => {
-                if (!ok) {
-                    alert('Изменения сохранены локально. Синхронизация с сервером не выполнена.');
-                }
-            }).catch(() => {});
-        }
-
         localStorage.setItem('user', JSON.stringify(updated));
-        alert('Профиль обновлён');
+        alert('Демо-профиль обновлён только в этом браузере');
     });
 });

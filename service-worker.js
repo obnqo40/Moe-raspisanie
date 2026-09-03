@@ -1,4 +1,4 @@
-const CACHE_NAME = 'moe-raspisanie-v5';
+const CACHE_NAME = 'moe-raspisanie-v6';
 const ASSETS = [
   'index.html',
   'login.html',
@@ -31,14 +31,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   
-  // Стратегия Network First для динамических данных
-  if (req.url.includes('users.json') || req.url.includes('schedule.json') || req.url.includes('/api/')) {
-    event.respondWith(
-      fetch(req).catch(() => caches.match(req))
-    );
-    return;
-  }
-
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;

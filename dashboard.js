@@ -100,7 +100,7 @@ function renderCatalog() {
     listTeachers().then(list => {
         const body = document.getElementById('catalog-body');
         if (!body) return;
-        body.innerHTML = '';
+        body.replaceChildren();
         const map = new Map();
         list.forEach(t => {
             const key = normalize(t.fullName).toLowerCase();
@@ -119,30 +119,43 @@ function renderCatalog() {
             const rooms = Array.from(item.rooms).join(', ');
             const firstSubject = Array.from(item.subjects)[0] || '';
             const firstRoom = Array.from(item.rooms)[0] || '';
-            tr.innerHTML = `<td>${item.fullName}</td><td>${subjects}</td><td>${rooms}</td>
-            <td style="display:flex;gap:8px;">
-                <button class="delete-lesson" title="Удалить" data-name="${item.fullName}"><i class="fas fa-trash"></i></button>
-                <button class="delete-lesson" title="Изменить" data-edit="${item.fullName}" data-subj="${firstSubject}" data-room="${firstRoom}"><i class="fas fa-pen"></i></button>
-            </td>`;
+
+            [item.fullName, subjects, rooms].forEach(value => {
+                const td = document.createElement('td');
+                td.textContent = value;
+                tr.appendChild(td);
+            });
+
+            const actions = document.createElement('td');
+            actions.style.display = 'flex';
+            actions.style.gap = '8px';
+
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.className = 'delete-lesson';
+            deleteButton.title = 'Удалить';
+            const trashIcon = document.createElement('i');
+            trashIcon.className = 'fas fa-trash';
+            deleteButton.appendChild(trashIcon);
+            deleteButton.addEventListener('click', async () => {
+                await deleteTeacherByFullName(item.fullName);
+                renderCatalog();
+            });
+
+            const editButton = document.createElement('button');
+            editButton.type = 'button';
+            editButton.className = 'delete-lesson';
+            editButton.title = 'Изменить';
+            const editIcon = document.createElement('i');
+            editIcon.className = 'fas fa-pen';
+            editButton.appendChild(editIcon);
+            editButton.addEventListener('click', () => {
+                startEditCatalog(item.fullName, firstSubject, firstRoom);
+            });
+
+            actions.append(deleteButton, editButton);
+            tr.appendChild(actions);
             body.appendChild(tr);
-        });
-        body.querySelectorAll('button.delete-lesson').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                const name = e.currentTarget.getAttribute('data-name');
-                if (name) {
-                    await deleteTeacherByFullName(name);
-                    renderCatalog();
-                }
-            });
-        });
-        body.querySelectorAll('button[data-edit]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const el = e.currentTarget;
-                const name = el.getAttribute('data-edit') || '';
-                const subj = el.getAttribute('data-subj') || '';
-                const room = el.getAttribute('data-room') || '';
-                startEditCatalog(name, subj, room);
-            });
         });
     });
 }
@@ -174,9 +187,9 @@ function populateFormSuggestions() {
         const sList = document.getElementById('subject-list');
         const rList = document.getElementById('room-list');
         if (!tList || !sList || !rList) return;
-        tList.innerHTML = '';
-        sList.innerHTML = '';
-        rList.innerHTML = '';
+        tList.replaceChildren();
+        sList.replaceChildren();
+        rList.replaceChildren();
         const subjects = new Set();
         const rooms = new Set();
         const names = new Set();
@@ -258,7 +271,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('user-name').textContent = user.name;
     loadSchedule();
-    tryLoadScheduleJson();
 
     document.getElementById('logout').addEventListener('click', logout);
     document.getElementById('add-lesson').addEventListener('click', showLessonModal);
@@ -320,7 +332,6 @@ function getSchedule() {
 function setSchedule(schedule) {
     scheduleCache = schedule || {};
     syncScheduleToDB(scheduleCache);
-    syncScheduleToServer(scheduleCache);
     tryNotifyScheduleChanged(scheduleCache);
 }
 
@@ -332,7 +343,7 @@ function logout() {
 
 // Показать модальное окно для добавления урока
 function showLessonModal() {
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
     document.getElementById('lesson-modal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
     populateFormSuggestions();
@@ -350,7 +361,7 @@ function hideLessonModal() {
 // Сохранить урок
 function saveLesson(e) {
     e.preventDefault();
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
 
     const subject = document.getElementById('lesson-subject').value;
     const teacher = document.getElementById('lesson-teacher').value;
@@ -408,7 +419,7 @@ function loadSchedule() {
 
     // Очистить все дни
     document.querySelectorAll('.lessons-list').forEach(list => {
-        list.innerHTML = '';
+        list.replaceChildren();
     });
 
     
@@ -482,41 +493,87 @@ function groupLessonsForDisplay(list) {
     return arr;
 }
 
-// Создать элемент урока
+function appendIconAndText(element, iconClass, value) {
+    const icon = document.createElement('i');
+    icon.className = iconClass;
+    element.append(icon, document.createTextNode(String(value ?? '')));
+}
+
+function createLessonTag(className, iconClass, value) {
+    const tag = document.createElement('span');
+    tag.className = className;
+    appendIconAndText(tag, iconClass, value);
+    return tag;
+}
+
+// Создать элемент урока без интерполяции импортированных данных в HTML.
 function createLessonElement(lesson, day) {
     const div = document.createElement('div');
     div.className = 'lesson-item';
-    const isTeacher = (currentUser?.role === 'teacher');
-    const buttons = isTeacher ? `
-            <button class="delete-lesson" onclick="deleteLesson(${lesson.id}, '${day}')"><i class="fas fa-trash"></i></button>
-            <button class="delete-lesson" onclick="openEditLesson(${lesson.id}, '${day}')"><i class="fas fa-pen"></i></button>
-        ` : '';
-    const badge = lesson._combined ? `<span class="chip"><i class="fas fa-layer-group"></i>подгруппы</span>` : '';
-    const chips = `
-        <div class="chips">
-            ${badge}
-            ${lesson.teacher ? `<span class="chip"><i class="fas fa-chalkboard-teacher"></i>${lesson.teacher}</span>` : ''}
-            ${lesson.class ? `<span class="chip"><i class="fas fa-users"></i>${lesson.class}</span>` : ''}
-            ${lesson.room ? `<span class="chip"><i class="fas fa-map-marker-alt"></i>${lesson.room}</span>` : ''}
-        </div>
-    `;
-    const slotRange = BELL_TIMES[String(lesson.time || '').trim()] || '';
-    div.innerHTML = `
-        <div class="lesson-info">
-            <div class="lesson-header">
-                <h4>${lesson.subject}</h4>
-                <span class="time-badge" title="${slotRange ? slotRange : ''}"><i class="fas fa-clock"></i>${lesson.time}</span>
-            </div>
-            <div class="lesson-meta">
-                ${lesson.teacher ? `<span class="meta-item"><i class="fas fa-chalkboard-teacher"></i>${lesson.teacher}</span>` : ''}
-                ${lesson.room ? `<span class="meta-item"><i class="fas fa-door-open"></i>${lesson.room}</span>` : ''}
-            </div>
-            ${chips}
-        </div>
-        <div>
-            ${buttons}
-        </div>
-    `;
+
+    const info = document.createElement('div');
+    info.className = 'lesson-info';
+
+    const header = document.createElement('div');
+    header.className = 'lesson-header';
+    const subject = document.createElement('h4');
+    subject.textContent = String(lesson.subject ?? '');
+    const time = document.createElement('span');
+    time.className = 'time-badge';
+    time.title = BELL_TIMES[String(lesson.time ?? '').trim()] || '';
+    appendIconAndText(time, 'fas fa-clock', lesson.time);
+    header.append(subject, time);
+
+    const meta = document.createElement('div');
+    meta.className = 'lesson-meta';
+    if (lesson.teacher) {
+        meta.appendChild(createLessonTag('meta-item', 'fas fa-chalkboard-teacher', lesson.teacher));
+    }
+    if (lesson.room) {
+        meta.appendChild(createLessonTag('meta-item', 'fas fa-door-open', lesson.room));
+    }
+
+    const chips = document.createElement('div');
+    chips.className = 'chips';
+    if (lesson._combined) {
+        chips.appendChild(createLessonTag('chip', 'fas fa-layer-group', 'подгруппы'));
+    }
+    if (lesson.teacher) {
+        chips.appendChild(createLessonTag('chip', 'fas fa-chalkboard-teacher', lesson.teacher));
+    }
+    if (lesson.class) {
+        chips.appendChild(createLessonTag('chip', 'fas fa-users', lesson.class));
+    }
+    if (lesson.room) {
+        chips.appendChild(createLessonTag('chip', 'fas fa-map-marker-alt', lesson.room));
+    }
+
+    info.append(header, meta, chips);
+
+    const actions = document.createElement('div');
+    if (currentUser?.role === 'teacher') {
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'delete-lesson';
+        deleteButton.title = 'Удалить';
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'fas fa-trash';
+        deleteButton.appendChild(deleteIcon);
+        deleteButton.addEventListener('click', () => deleteLesson(lesson.id, day));
+
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.className = 'delete-lesson';
+        editButton.title = 'Изменить';
+        const editIcon = document.createElement('i');
+        editIcon.className = 'fas fa-pen';
+        editButton.appendChild(editIcon);
+        editButton.addEventListener('click', () => openEditLesson(lesson.id, day));
+
+        actions.append(deleteButton, editButton);
+    }
+
+    div.append(info, actions);
     return div;
 }
 
@@ -537,7 +594,7 @@ window.startEditCatalog = startEditCatalog;
 
 // Удалить урок
 function deleteLesson(id, day) {
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
     if (!confirm('Удалить этот урок?')) return;
     const schedule = getSchedule();
     schedule[day] = schedule[day].filter(lesson => lesson.id !== id);
@@ -568,7 +625,11 @@ function populateTeacherSelect() {
         });
     });
     const select = document.getElementById('absent-teacher-select');
-    select.innerHTML = '<option value="">— Выберите из списка —</option>';
+    select.replaceChildren();
+    const emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.textContent = '— Выберите из списка —';
+    select.appendChild(emptyOption);
     Array.from(set).sort().forEach(name => {
         const opt = document.createElement('option');
         opt.value = name;
@@ -578,7 +639,7 @@ function populateTeacherSelect() {
 }
 
 function applyRearrange() {
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
     const select = document.getElementById('absent-teacher-select');
     const input = document.getElementById('absent-teacher-input');
     const daySel = document.getElementById('rearrange-day');
@@ -613,7 +674,7 @@ function applyRearrange() {
  
 
 function exportScheduleExcel() {
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
     if (typeof XLSX === 'undefined') { showToast('Библиотека XLSX не загружена'); return; }
     const schedule = getSchedule();
     const wb = XLSX.utils.book_new();
@@ -688,7 +749,7 @@ function exportScheduleExcel() {
 }
 
 function handleImportExcelFile(e) {
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
     const file = e.target.files[0];
     if (!file) return;
     if (typeof XLSX === 'undefined') { showToast('Библиотека XLSX не загружена'); return; }
@@ -924,41 +985,8 @@ function handleImportExcelFile(e) {
 
  
 
-async function tryLoadScheduleJson() {
-    try {
-        if (typeof isGithubConfigured === 'function' && isGithubConfigured() && typeof fetchGithubFile === 'function') {
-            const gh = await fetchGithubFile('schedule.json');
-            if (gh) { setSchedule(gh); syncScheduleToDB(gh); loadSchedule(); return; }
-        }
-    } catch (_) {}
-    try {
-        const r = await fetch('schedule.json');
-        const data2 = r.ok ? await r.json() : null;
-        if (data2) { setSchedule(data2); syncScheduleToDB(data2); loadSchedule(); }
-    } catch (_) {}
-}
-
-async function syncScheduleToServer(schedule) {
-    try {
-        if (typeof isGithubConfigured === 'function' && isGithubConfigured() && typeof syncScheduleToGithub === 'function') {
-            const ok = await syncScheduleToGithub(schedule);
-            if (ok) return;
-        }
-    } catch(_) {}
-    try {
-        const base = (typeof getApiBase === 'function' ? getApiBase() : '') || '';
-        const url = (base || '').replace(/\/$/, '');
-        if (url) {
-            const headers = typeof apiHeaders === 'function' ? apiHeaders(true) : { 'Content-Type': 'application/json' };
-            await fetch(`${url}/schedule`, { method: 'POST', headers, body: JSON.stringify(schedule) });
-        }
-    } catch(_) {}
-}
-
- 
-
 function clearSchedule() {
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
     if (!confirm('Очистить всё расписание?')) return;
     setSchedule({});
     clearUserScheduleRecords();
@@ -969,7 +997,7 @@ function clearSchedule() {
  
 
 function openEditLesson(id, day) {
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
     const schedule = getSchedule();
     const lessons = schedule[day] || [];
     const l = lessons.find(x => x.id === id);
@@ -1116,7 +1144,7 @@ function computeOrderForSubjects(subjMap) {
 }
 
 async function autoGenerateSchedule() {
-    if (!isTeacher()) { showToast('Недостаточно прав'); return; }
+    if (!isTeacher()) { showToast('Выберите демо-роль «Учитель» для этой функции'); return; }
     const t0 = performance.now();
     const clsFilter = document.getElementById('filter-class')?.value || 'all';
     const base = getSchedule();

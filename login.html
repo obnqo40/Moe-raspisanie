@@ -43,13 +43,13 @@
         </div>
         <div class="hero-content">
             <div class="hero-badge">
-                <span>Аутентификация</span>
+                <span>Локальный V1-демо</span>
             </div>
             <h1 class="hero-title">
                 Добро пожаловать!
             </h1>
             <p class="hero-subtitle">
-                Войдите в свой аккаунт или зарегистрируйтесь, чтобы управлять своим расписанием.
+                Создайте локальный демо-профиль, чтобы попробовать управление расписанием.
             </p>
             <div class="auth-tabs">
                 <button id="login-tab" class="auth-tab active">
@@ -69,15 +69,15 @@
         <div class="container">
             <!-- Форма входа -->
             <div id="login-form" class="join-content active">
-                <h2 class="join-title">Вход в аккаунт</h2>
+                <h2 class="join-title">Вход в локальный демо-профиль</h2>
                 <p class="join-subtitle">
-                    Введите свои данные для входа
+                    Данные остаются в этом браузере. Не используйте реальный пароль или персональные данные.
                 </p>
 
                 <form id="loginForm" class="auth-form">
                     <div class="form-group">
                         <label for="loginEmail">Email</label>
-                        <input type="email" id="loginEmail" name="email" required autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" enterkeyhint="next">
+                        <input type="email" id="loginEmail" name="email" placeholder="student@example.test" required autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" enterkeyhint="next">
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Пароль</label>
@@ -87,17 +87,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Тип аккаунта</label>
+                        <label>Роль интерфейса (демо)</label>
                         <div class="role-toggle" id="login-role-toggle">
                             <input type="radio" id="login-role-student" name="loginRole" value="student" checked>
                             <label for="login-role-student" class="role-option"><i class="fas fa-user-graduate"></i> Ученик</label>
                             <input type="radio" id="login-role-teacher" name="loginRole" value="teacher">
                             <label for="login-role-teacher" class="role-option"><i class="fas fa-chalkboard-teacher"></i> Учитель</label>
                         </div>
-                    </div>
-                    <div id="loginTeacherCodeGroup" class="form-group" style="display:none;">
-                        <label for="loginTeacherCode">Код подтверждения учителя</label>
-                        <input type="text" id="loginTeacherCode" name="teacherCode" placeholder="Введите код" inputmode="numeric" enterkeyhint="go">
                     </div>
                     <button type="submit" class="join-button">
                         <i class="fas fa-sign-in-alt"></i>
@@ -110,9 +106,9 @@
 
             <!-- Форма регистрации -->
             <div id="register-form" class="join-content">
-                <h2 class="join-title">Регистрация</h2>
+                <h2 class="join-title">Создание локального демо-профиля</h2>
                 <p class="join-subtitle">
-                    Заполните форму для создания аккаунта
+                    Роль выбирается только для демонстрации интерфейса и не является защищённой авторизацией.
                 </p>
 
                 <form id="registerForm" class="auth-form">
@@ -122,7 +118,7 @@
                     </div>
                     <div class="form-group">
                         <label for="registerEmail">Email</label>
-                        <input type="email" id="registerEmail" name="email" required autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" enterkeyhint="next">
+                        <input type="email" id="registerEmail" name="email" placeholder="student@example.test" required autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" enterkeyhint="next">
                     </div>
                     <div class="form-group">
                         <label for="registerPassword">Пароль</label>
@@ -139,17 +135,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Тип аккаунта</label>
+                        <label>Роль интерфейса (демо)</label>
                         <div class="role-toggle" id="register-role-toggle">
                             <input type="radio" id="reg-role-student" name="registerRole" value="student" checked>
                             <label for="reg-role-student" class="role-option"><i class="fas fa-user-graduate"></i> Ученик</label>
                             <input type="radio" id="reg-role-teacher" name="registerRole" value="teacher">
                             <label for="reg-role-teacher" class="role-option"><i class="fas fa-chalkboard-teacher"></i> Учитель</label>
                         </div>
-                    </div>
-                    <div id="teacherCodeGroup" class="form-group" style="display:none;">
-                        <label for="registerTeacherCode">Код подтверждения учителя</label>
-                        <input type="text" id="registerTeacherCode" name="teacherCode" placeholder="Введите код">
                     </div>
                     <button type="submit" class="join-button">
                         <i class="fas fa-user-plus"></i>

@@ -6,7 +6,7 @@
 
 **[Демо на Vercel ↗](https://moe-raspisanie.vercel.app/)** · [GitHub Pages](https://obnqo40.github.io/Moe-raspisanie/) · [Разбор V1](https://github.com/obnqo40/obnqo40/blob/main/docs/scheduling.md) · [Портфолио автора](https://github.com/obnqo40)
 
-![Главная страница проекта Моё Расписание](https://raw.githubusercontent.com/obnqo40/obnqo40/main/assets/scheduling.jpg)
+![Главная страница проекта Моё Расписание](https://raw.githubusercontent.com/obnqo40/obnqo40/main/assets/studio/cover-schedule.png)
 
 ## Project Status
 

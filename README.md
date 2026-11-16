@@ -4,7 +4,7 @@
 
 Веб-приложение демонстрирует управление школьным расписанием: просмотр и редактирование уроков, справочник преподавателей, генерацию расписания, импорт/экспорт Excel и базовые PWA-возможности.
 
-[Демо ↗](https://moe-raspisanie.vercel.app/) · [Разбор V1](https://github.com/obnqo40/obnqo40/blob/main/docs/scheduling.md) · [Портфолио автора](https://github.com/obnqo40)
+**[Демо на Vercel ↗](https://moe-raspisanie.vercel.app/)** · [GitHub Pages](https://obnqo40.github.io/Moe-raspisanie/) · [Разбор V1](https://github.com/obnqo40/obnqo40/blob/main/docs/scheduling.md) · [Портфолио автора](https://github.com/obnqo40)
 
 ![Главная страница проекта Моё Расписание](https://raw.githubusercontent.com/obnqo40/obnqo40/main/assets/scheduling.jpg)
 
